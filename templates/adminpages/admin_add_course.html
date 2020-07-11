@@ -1,0 +1,304 @@
+{% extends 'adminpages/base_admin.html' %}
+
+{% block title %}
+{% if user.language == 'ru' %}Страница добавления нового курса{% else %}Жаңа курс қосу беті{% endif %}
+{% endblock %}
+
+{% block content %}
+{% load static %}
+
+<section class="course_section">
+    <div class="container">
+        <div class="back_btn">
+          <a href="{% url 'admin_index' %}" class="back_link"><i class="fas fa-arrow-left"></i></a>
+        </div>
+        {% for message in messages %}
+        {% if 'new_error' in message.tags %}
+          <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {% if user.language == 'ru' %}Этот урок уже существует, выберите другой id{% else %}{{message}} - сабақ бар, қайтып қосу мүмкін емес{% endif %}
+          </div>
+        {% endif %}
+  {% endfor %}
+      <div class="course_title_block">
+        <div class="course_title">
+          <h4 id="courseTitleLocation">{{course.title}}</h4>
+        </div>
+        <div class="course_title_btn">
+          <button type="button" class="course_sh_btn" data-target="#courseTitle" data-toggle="modal">{% if user.language == 'ru' %}Изменить название{% else %}Курстың атын өзгерту{% endif %}</button>
+        </div>
+      </div>
+      <form action="">
+        <div class="video_img">
+          <div class="course_headvideo">
+            {% if course.video.name == 'default.mp4' %}
+            <div class="label_input">
+              <div class="defImg">
+                <img src="{% static 'img/defaultvid.jpg' %}" alt="">
+              </div>
+              <label for="uploadVideo" class="course_sh_btn">{% if user.language == 'ru' %}Добавить видео ознакомление{% else %}Бейне таныстыру қосу{% endif %}</label>
+            </div>
+            {% else %}
+            <div id="player">
+            </div>
+            <div class="video_bottom_labels">
+              <label for="uploadVideo" class="course_sh_btn" >{% if user.language == 'ru' %}Изменить видео{% else %}Бейнені өзгерту{% endif %}</label>
+              <label for="uploadPoster" class="course_sh_btn" >{% if user.language == 'ru' %}Добавить постер к видео{% else %}Бейнеге сурет қосу{% endif %}</label>
+            </div>
+            {% endif %}
+          </div>
+          <div class="user_image">
+            <img src="{{course.image.url}}" alt="AVATAR">
+            <form action="">
+              <label for="img_upload" class="iu_label">{% if user.language == 'ru' %}Изменить{% else %}Өзгерту{% endif %}</label>
+              
+            </form>
+          </div>
+        </div>
+      </form>
+      <div class="course_lessons_data">
+        <div class="course_less">
+          <h4>{% if user.language == 'ru' %}Содержание курса{% else %}Курс сабақтары{% endif %}</h4>
+          <div class="course_less_items">
+            {% for lesson in lessons %}
+            <div class="course_less_item">
+              <a href="{{lesson.lesson_detail}}"><p> {{lesson.lesson_id}}. {{lesson.title|slice:"0:30"}}{% if lesson.title|length > 30 %}...{% endif %}</p></a>
+              <div class="course_less_btns">
+                <button type="button" data-target="#lessName_{{forloop.counter}}" data-toggle="modal" class="course_sh_btn">{% if user.language == 'ru' %}Название урока{% else %}Сабақтың аты{% endif %}</button>
+                <button data-target="#deleteLesson" data-toggle="modal" data-url="{{lesson.lesson_delete}}" type="button" class="deleteLessBtn course_sh_btn">{% if user.language == 'ru' %}Удалить{% else %}Өшіру{% endif %}</button>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          <!-- <a href="{{course.create_lesson}}" class="course_sh_btn">Добавить новый урок</a> -->
+          <button class="course_sh_btn" style="width: 100%;" data-target="#lessName_new" data-toggle="modal">{% if user.language == 'ru' %}Добавить новый урок{% else %}Жаңа сабақ қосу{% endif %}</button>
+        </div>
+        <div class="cbd_info">
+          <div class="cbd_info_item">
+            <p>{% if user.language == 'ru' %}Описания курса{% else %}Курс мазмұны{% endif %}</p>
+            <p><strong id="data1">{% if data.developer %}{{data.developer|slice:"0:33"}}...{% else %}{% if user.language == 'ru' %}Не указан{% else %}Көрсетілмеген{% endif %}{% endif %}</strong></p>
+          </div>
+          <div class="cbd_info_item">
+            <p>{% if user.language == 'ru' %}Длительность{% else %}Ұзақтығы{% endif %}</p>
+            <p><strong id="data2">{% if data.duration %}{{data.duration}}{% else %}{% if user.language == 'ru' %}Не указан{% else %}Көрсетілмеген{% endif %}{% endif %}</strong></p>
+          </div>
+          <div class="cbd_info_item">
+            <p>Сертификат</p>
+            <p><strong id="data3">{% if data.certificate %}{{data.certificate}}{% else %}{% if user.language == 'ru' %}Не указан{% else %}Көрсетілмеген{% endif %}{% endif %}</strong></p>
+          </div>
+          <div class="cbd_info_item">
+            <p>{% if user.language == 'ru' %}Время{% else %}Уақыты{% endif %}</p>
+            <p><strong id="data4">{% if data.time %}{{data.time}}{% else %}{% if user.language == 'ru' %}Не указан{% else %}Көрсетілмеген{% endif %}{% endif %}</strong></p>
+          </div>
+          <a href="javascript:void(0);"  data-target="#editCourseData" data-toggle="modal" class="site_btns follow_link">{% if user.language == 'ru' %}Редактировать данные{% else %}Мәліметтерді өзгерту{% endif %}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+
+  <!-- Modal for lesson name -->
+  {% for lesson in lessons %}
+  <div class="modal fade" id="lessName_{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="lessNameTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="lessNameTitle">{% if user.language == 'ru' %}Название урока{% else %}Сабақтың аты{% endif %}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="" method="POST">
+            {% csrf_token %}
+             <input name="title_{{lesson.id}}" type="text" class="res_pass_input" {% if lesson.title %}value="{{lesson.title}}"{% endif %} placeholder="{% if user.language == 'ru' %}Введите название урока{% else %}Сабақтың атың енгізіңіз{% endif %}" required>
+             <input name="number_{{lesson.id}}" type="number" class="res_pass_input" {% if lesson.lesson_id %}value="{{lesson.lesson_id}}"{% endif %} placeholder="{% if user.language == 'ru' %}Введите идентификатор для урока{% else %}Сабақтың идентификаторын енгізіңіз{% endif %}" required>
+            <button name="submit_{{lesson.id}}" type="submit" name="title_course" class="course_btn" id="courseTitleBtn" style="width: 100%;">{% if user.language == 'ru' %}Сохранить{% else %}Сақтау{% endif %}</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  <!-- Modal for image upload -->
+  <div class="modal fade" id="img_up" tabindex="-1" role="dialog" aria-labelledby="img_upTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="img_upTitle">{% if user.language == 'ru' %}Изменить аватар{% else %}Суретті өзгерту{% endif %}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="" method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+            <p class="img_f_name"></p>
+            <!-- <input type="file" name="new_image" id="img_upload" /> -->
+            {{form_image.image}}
+            <button type="submit" name="image_course" class="course_btn" style=" width: 100%;">{% if user.language == 'ru' %}Изменить{% else %}Өзгерту{% endif %}</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for video upload -->
+  <div class="modal fade" id="vidUp" tabindex="-1" role="dialog" aria-labelledby="vidUpTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="vidUpTitle">{% if user.language == 'ru' %}Загрузить видео{% else %}Видеоны жүктеу{% endif %}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <p class="img_f_name" id="vname"></p>
+            <!-- <input type="file" name="new_video" id="uploadVideo"> -->
+            {{form_video.video}}
+            <button type="submit" name="video_course" class="course_btn" id="add_header_video" style=" width: 100%;">{% if user.language == 'ru' %}Добавить{% else %}Қосу{% endif %}</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal for poster upload -->
+  <div class="modal fade" id="posterUpload" tabindex="-1" role="dialog" aria-labelledby="posterUploadTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="posterUploadTitle">{% if user.language == 'ru' %}Загрузить постер{% else %}Бейнеге суретті жүктеу{% endif %}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form action="" method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+              <p class="img_f_name" id="posterName"></p>
+              <input type="file" name="new_poster" id="uploadPoster">
+              <button type="submit" name="video_poster" class="course_btn" id="add_header_video" style=" width: 100%;">{% if user.language == 'ru' %}Добавить{% else %}Қосу{% endif %}</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  <!-- Modal for input course name -->
+  <div class="modal fade" id="courseTitle" tabindex="-1" role="dialog" aria-labelledby="courseTitleTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="courseTitleTitle">{% if user.language == 'ru' %}Название курса{% else %}Курстың аты{% endif %}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="" method="POST">
+              {% csrf_token %}
+            {{form_title.title}}
+            <select name="type_curs" class="testSelect" id="trueVariant">
+                <option id="variant1" value="" style="display: none;">{% if user.language == 'ru' %}Выберите типы{% else %}Түрлерін таңдаңыз{% endif %}</option>
+                <option id="variant2" value="0" {% if course.type_curs == 0 %}selected{% endif %}>  Робототехника</option>
+                <option id="variant3" value="1" {% if course.type_curs == 1 %}selected{% endif %} >{% if user.language == 'ru' %}Мобильное приложение{% else %}Мобильді қосымша{% endif %}</option>
+                <option id="variant4" value="2" {% if course.type_curs == 2 %}selected{% endif %}>{% if user.language == 'ru' %}Олимпиадное программирование{% else %}Олимпиадалық бағдарламалау{% endif %}</option>
+                <option id="variant5" value="3" {% if course.type_curs == 3 %}selected{% endif %}>{% if user.language == 'ru' %}Бизнес в IT{% else %}IT саласындағы бизнес{% endif %}</option>
+                <option id="variant6" value="4" {% if course.type_curs == 4 %}selected{% endif %}>Графика</option>
+                <option id="variant7" value="5" {% if course.type_curs == 5 %}selected{% endif %}>{% if user.language == 'ru' %}Другие...{% else %}Басқалары...{% endif %}</option>
+            </select>
+            <div class="addHintBtn">
+              <button type="submit" name="title_course" class="course_btn" id="courseTitleBtn" style="width: 100%;">{% if user.language == 'ru' %}Изменить{% else %}Өзгерту{% endif %}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for edit data -->
+  <div class="modal fade" id="editCourseData" tabindex="-1" role="dialog" aria-labelledby="editCourseDataTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editCourseDataTitle">{% if user.language == 'ru' %}Изменить данные{% else %}Мәліметтерді еңгізу{% endif %}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="" method="POST">
+            {% csrf_token %}
+            <!-- <input type="text" name="developer" class="res_pass_input" id="data_1" value="{{data.developer}}" placeholder="{% if user.language == 'ru' %}Разработчик курса{% else %}Курсты жасаған{% endif %}" required> -->
+            <textarea name="developer" class="res_pass_input" placeholder="{% if user.language == 'ru' %}Описания курса{% else %}Курс мазмұны{% endif %}" id="" rows="5" style="width: 100%; outline: none;">{{data.developer}}</textarea>
+            <input type="text" name="duration" class="res_pass_input" id="data_2" value="{{data.duration}}" placeholder="Ұзақтығы" required>
+            <div class="status_edit_page" id="data_3">
+              <p>Сертификат:</p>
+              <input type="radio" value="{% if user.language == 'ru' %}Есть{% else %}Бар{% endif %}" id="true" name="sert" checked>
+              <label for="true">{% if user.language == 'ru' %}Есть{% else %}Бар{% endif %}</label>
+              <input type="radio" value="{% if user.language == 'ru' %}Нет{% else %}Жоқ{% endif %}" id="false" name="sert">
+              <label for="false">{% if user.language == 'ru' %}Нет{% else %}Жоқ{% endif %}</label>
+            </div>
+            <input type="text" name="time" class="res_pass_input" id="data_4" placeholder="{% if user.language == 'ru' %}Время{% else %}Уақыты{% endif %}" value="{{data.time}}" required>
+            <button type="submit" name="add_data_course" id="editCourseBtn" class="course_btn" style="width: 100%;">{% if user.language == 'ru' %}Сохранить{% else %}Сақтау{% endif %}</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+<div class="modal fade" id="deleteLesson" tabindex="-1" role="dialog" aria-labelledby="deleteLessonTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body" style="text-align: center;">
+          <form action="">
+            <h4 style="margin-bottom: 30px;">{% if user.language == 'ru' %}Вы точно хотите удалить?{% else %}Өшіруді растайсыз ба?{% endif %}</h4>
+            <button type="button" class="delete_teacher_btn_close" data-dismiss="modal">{% if user.language == 'ru' %}Отмена{% else %}Бас тарту{% endif %}</button>
+            <a href="" class="delete_teacher_btn">{% if user.language == 'ru' %}Удалить{% else %}Жою{% endif %}</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<div class="modal fade" id="lessName_new" tabindex="-1" role="dialog" aria-labelledby="lessNameTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="lessNameTitle">{% if user.language == 'ru' %}Название урока{% else %}Сабақтың аты{% endif %}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="" method="POST">
+            {% csrf_token %}
+              <input name="title_new" type="text" class="res_pass_input" placeholder="{% if user.language == 'ru' %}Введите название урока{% else %}Сабақтың атың еңгізу{% endif %}" required>
+              <input name="number_new" type="number" class="res_pass_input" placeholder="{% if user.language == 'ru' %}Введите идентификатор для урока{% else %}Сабақтың идентификаторын еңгізіңіз{% endif %}" required>
+            <button name="submit_new" type="submit" name="title_course" class="course_btn" id="courseTitleBtn" style="width: 100%;">{% if user.language == 'ru' %}Добавить{% else %}Қосу{% endif %}</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}
+
+
+{% block player %}
+<script type="text/javascript">
+  var player = new Playerjs({
+    id: "player",
+    file: "{{URL_MEDIA}}{{course.video.url}}",
+    {% if course.image_video %}
+    poster: "{{course.image_video.url}}"
+    {% endif %}
+  });
+</script>
+{% endblock %}

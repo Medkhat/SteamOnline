@@ -1,0 +1,180 @@
+{% extends 'studpages/base_student.html' %}
+
+{% block title %}
+{% if user.language == 'ru' %}Страница обучения{% else %}Оқу беті{% endif %}
+{% endblock %}
+
+{% block content %}
+{% load static %}
+<section class="course_section">
+
+  <div class="container">
+    <div class="back_btn">
+	    <a href="{{course.curs.course_before_student}}" class="back_link"><i class="fas fa-arrow-left"></i></a>
+    </div>
+    <h3 class="block_title">{{course.curs.title}}</h3>
+    <div class="course_detail">
+      <div class="cd_left_block">
+        <h5>{% if user.language == 'ru' %}Уроки курса{% else %}Курс сабақтары{% endif %}</h5>
+        <div class="course_lessons">
+          <ul>
+            {% for lesson in lessons %}
+            {% if lesson.id == lesson_id %}
+            <li>
+              <a href="{{lesson.course_after_student}}" class="active_cl"><i
+                  class="fa fa-play-circle"></i>{{lesson.lesson_id}}. {{lesson.title}}</a>
+            </li>
+            {% else %}
+            <li>
+              <a href="{{lesson.course_after_student}}"><i class="fa fa-play-circle"></i>{{lesson.lesson_id}}.
+                {{lesson.title}}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      <div class="cd_right_block">
+        <div class="course_name">
+          <h5>{% if user.language == 'ru' %}О курсе{% else %}Курс туралы{% endif %}</h5>
+          <div class="course_content">
+            {{les.text|safe}}
+          </div>
+        </div>
+        <div class="course_video">
+          <!-- <h5></h5> -->
+          {% for video in videos %}
+          <h3>{{video.title}}</h3>
+          <div id="player{{forloop.counter}}">
+          </div>
+          <br>
+          {%endfor%}
+        </div>
+        <div class="course_test">
+          <h5>{% if user.language == 'ru' %}Пройти тест{% else %}Тесттен өтіңіз{% endif %}</h5>
+          {% if test_student %}
+          <div class="test_result">
+            <h4>{% if user.language == 'ru' %}Вы удачно окончили тест, <span class="trueVariants">верно
+                {{points}}</span> из {{all_points}} {% else %}Сіз тестті аяқтадыныз. Жалпы {{all_points}} сұрақтың
+              дұрысы: {{points}}{% endif %}</h4>
+          </div>
+          {% else %}
+          <form action="" method="POST">
+            {% csrf_token %}
+            <div class="test_tabs">
+              <div class="tab_nav">
+                {% for test in tests %}
+                <div class="tab_nav_item {% if forloop.counter == 1 %}is-active{% endif %}"
+                  data-tabName="tab_{{forloop.counter}}">{{forloop.counter}}</div>
+                {% endfor %}
+              </div>
+              <div class="tab_content">
+                {% for test in tests %}
+                <div class="tab_content_item {% if forloop.counter == 1 %}is-active{% endif %} tab_{{forloop.counter}}">
+                  <h4>{{test.ask}}</h4>
+                  <div class="test_item">
+                    <input type="radio" class="radioBtns" name="answer_{{test.id}}" id="1{{forloop.counter}}"
+                      value="{{rd.0}}" required><label for="1{{forloop.counter}}">
+                      {% if rd.0 == 1 %}{{test.answer1}}{% elif rd.0 == 2 %}{{test.answer2}}{% elif rd.0 == 3 %}{{test.answer3}}{% elif rd.0 == 4 %}{{test.answer4}}{% elif rd.0 == 5 %}{{test.answer5}}{% endif %}</label>
+                  </div>
+                  <div class="test_item">
+                    <input type="radio" class="radioBtns" name="answer_{{test.id}}" id="2{{forloop.counter}}"
+                      value="{{rd.1}}" required><label for="2{{forloop.counter}}">
+                      {% if rd.1 == 1 %}{{test.answer1}}{% elif rd.1 == 2 %}{{test.answer2}}{% elif rd.1 == 3 %}{{test.answer3}}{% elif rd.1 == 4 %}{{test.answer4}}{% elif rd.1 == 5 %}{{test.answer5}}{% endif %}</label>
+                  </div>
+                  <div class="test_item">
+                    <input type="radio" class="radioBtns" name="answer_{{test.id}}" id="3{{forloop.counter}}"
+                      value="{{rd.2}}" required><label for="3{{forloop.counter}}">
+                      {% if rd.2 == 1 %}{{test.answer1}}{% elif rd.2 == 2 %}{{test.answer2}}{% elif rd.2 == 3 %}{{test.answer3}}{% elif rd.2 == 4 %}{{test.answer4}}{% elif rd.2 == 5 %}{{test.answer5}}{% endif %}</label>
+                  </div>
+                  <div class="test_item">
+                    <input type="radio" class="radioBtns" name="answer_{{test.id}}" id="4{{forloop.counter}}"
+                      value="{{rd.3}}" required><label for="4{{forloop.counter}}">
+                      {% if rd.3 == 1 %}{{test.answer1}}{% elif rd.3 == 2 %}{{test.answer2}}{% elif rd.3 == 3 %}{{test.answer3}}{% elif rd.3 == 4 %}{{test.answer4}}{% elif rd.3 == 5 %}{{test.answer5}}{% endif %}</label>
+                  </div>
+                  <div class="test_item">
+                    <input type="radio" class="radioBtns" name="answer_{{test.id}}" id="5{{forloop.counter}}"
+                      value="{{rd.4}}" required><label for="5{{forloop.counter}}">
+                      {% if rd.4 == 1 %}{{test.answer1}}{% elif rd.4 == 2 %}{{test.answer2}}{% elif rd.4 == 3 %}{{test.answer3}}{% elif rd.4 == 4 %}{{test.answer4}}{% elif rd.4 == 5 %}{{test.answer5}}{% endif %}</label>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+            <div class="addHintBtn">
+              <p class="warningParagraph" id="warningP"></p>
+              <button type="submit" name="submit_test" id="submitTest" class="course_btn"
+                style="background-color: orangered;">{% if user.language == 'ru' %}Закончить тест{% else %}Тестті
+                аяқтау{% endif %}</button>
+            </div>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+      <div class="help_block">
+        {% for hint in hints %}
+        <div class="help_item" data-target="#helpModal{{forloop.counter}}" data-toggle="modal">
+          <i class="far fa-question-circle"></i>
+        </div>
+
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Modal -->
+{% for hint in hints %}
+<div class="modal fade" id="helpModal{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="helpModalTitle"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="helpModalTitle">{% if user.language == 'ru' %}Дополнительная
+          информация{% else %}Қосымша ақпарат{% endif %} {{forloop.counter}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        {{hint.text|safe}}
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+<script src="{% static 'js/testTabs.js' %}"></script>
+<script>
+
+  document.getElementById('submitTest').addEventListener('click', function () {
+
+    var radioButtons = document.getElementsByClassName('radioBtns');
+    radioButtons = Array.from(radioButtons);
+    var warningP = document.getElementById('warningP');
+
+    for (let i = 0; i < radioButtons.length; i++) {
+      if (radioButtons[i].checked == null) {
+        warningP.textContent = '{% if user.language == "ru" %}Есть не выбранные варианты!{% else %}Сұрақтарды толық белгілеңіз!{% endif %}';
+      }
+    }
+
+  });
+
+</script>
+{% endblock %}
+
+{% block player %}
+{% for video in videos %}
+<script type="text/javascript">
+  var player = new Playerjs({
+    id: "player{{forloop.counter}}",
+    file: "{{URL_MEDIA}}{{video.video.url}}",
+    {% if video.image_video %}
+  poster: "{{URL_MEDIA}}{{video.image_video.url}}"
+  {% endif %}
+  });
+</script>
+{% endfor %}
+{% endblock %}

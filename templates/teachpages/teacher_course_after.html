@@ -1,0 +1,96 @@
+{% extends 'teachpages/base_teacher.html' %}
+
+{% block title %}
+{% if user.language == 'ru' %}Страница курса{% else %}Курс беті{% endif %}
+{% endblock %}
+
+{% block content %}
+{% load static %}
+<section class="course_section">
+  
+    <div class="container">
+        <div class="back_btn">
+            <a href="{{les.curs.course_detail_teacher}}" class="back_link"><i class="fas fa-arrow-left"></i></a>
+          </div>
+      <h3 class="block_title">{{les.curs.title}}</h3>
+      <div class="course_detail">
+        <div class="cd_left_block">
+          <h5>{% if user.language == 'ru' %}Уроки курса{% else %}Курс сабақтары{% endif %}</h5>
+          <div class="course_lessons">
+            <ul>
+                {% for lesson in lessons %}
+                {% if lesson.id == lesson_id %}
+                <li>
+                  <a href="{{lesson.teacher_lesson}}" class="active_cl"><i class="fa fa-play-circle"></i> {{lesson.lesson_id}}. {{lesson.title}}</a>
+                </li>
+                {% else %}
+                <li>
+                  <a href="{{lesson.teacher_lesson}}"><i class="fa fa-play-circle"></i>  {{lesson.lesson_id}}. {{lesson.title}}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+          </div>
+        </div>
+        <div class="cd_right_block">
+          <div class="course_name">
+            <h5>{% if user.language == 'ru' %}О курсе{% else %}Курс туралы{% endif %}</h5>
+            <div class="course_content">
+              {{les.text_teacher|safe}}
+            </div>
+          </div>
+          <div class="course_video">
+            <!-- <h5></h5> -->
+            {% for video in videos %}
+            <h3>{{video.title}}</h3>
+            <div id="player{{forloop.counter}}">
+            </div>
+            <br>
+            {%endfor%}
+          </div>
+          
+        </div>
+        <div class="help_block">
+            {% for hint in hints %}
+          <div class="help_item" data-target="#helpModal{{forloop.counter}}" data-toggle="modal">
+            <i class="far fa-question-circle"></i>
+          </div>
+         
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Modal -->
+  {% for hint in hints %}
+  <div class="modal fade" id="helpModal{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="helpModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="helpModalTitle">{% if user.language == 'ru' %}Дополнительная информация{% else %}Қосымша ақпарат{% endif %} {{forloop.counter}}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          {{hint.text|safe}}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+
+{% endblock %}
+
+{% block player %}
+{% for video in videos %}
+<script type="text/javascript">
+  var player = new Playerjs({
+    id: "player{{forloop.counter}}",
+    file: "{{URL_MEDIA}}{{video.video.url}}",
+    poster: "{% static 'img/course.jpg' %}"
+  });
+</script>
+{% endfor %}
+{% endblock %}

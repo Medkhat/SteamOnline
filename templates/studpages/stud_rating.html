@@ -1,0 +1,55 @@
+{% extends 'studpages/base_student.html' %}
+
+{% block title %}
+    Рейтинг
+{% endblock %}
+
+{% block content %}
+{% load static %}
+<style>
+    #link2 {
+        background-color: #03d2c8;
+        color: #ffffff;
+        box-shadow: 0 3px 10px 1px rgba(0, 0, 0, 0.3);
+    }
+    .rating_info i{
+        margin-right: 20px;
+        font-size: 20px;
+        color: #03d2c8;
+    }
+</style>
+<section class="course_section">
+    <div class="container">
+        <div class="stud_img_rate_data">
+            <div class="stud_img">
+                <img src="{% static 'img/student.jpg'%}" alt="StudIMG">
+            </div>
+            {% for student in students %}
+            {% if student.id == user.id %}
+            <div class="rate_number">
+                <span>{{forloop.counter}}<br>{% if user.language == 'ru' %}место{% else %}орын{% endif %}</span>
+            </div>
+            <div class="rate_data">
+                <span>{{student.first_name}} {{student.last_name}}</span>
+                <span>{{student.rating}} {% if user.language == 'ru' %}очков{% else %}ұпай{% endif %}</span>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        <div class="rating_info">
+            <p><i class="fas fa-exclamation"></i>{% if user.language == 'ru' %}За каждый правильный ответ в тесте, добавляется 1 балл{% else %}Тесттегі әрбір дұрыс жауап үшін 1 балл қосылады{% endif %}</p>
+            <p><i class="fas fa-exclamation"></i>{% if user.language == 'ru' %}За каждое выполненное практическое задание, добавляется 5 баллов{% else %}Әрбір орындалған практикалық жұмыс үшін 5 балл қосылады{% endif %}</p>
+            <p><i class="fas fa-exclamation"></i>{% if user.language == 'ru' %}Ваш преподаватель за ваши достижение и сертификаты может добавлять дополнительные баллы{% else %}Сіздің оқытушыңыз өз қалауынша сіздің жетістіктеріңіз үшін, және де сертификаттарыңыз үшін қосымша балл қоса алады{% endif %}</p>
+        </div>
+        <div class="rating_table">
+        {% for student in students %}
+            <div class="rating_list_item">
+                <p class="rt_number">{{forloop.counter}}</p>
+                <p class="rt_name">{{student.first_name}} {{student.last_name}}</p>
+                <p class="rt_point">{{student.rating}}</p>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'studpages/base_student.html' %}
+
+{% block title %}
+{% if user.language == 'ru' %}Продолжить обучение{% else %}Үйренуді жалғастыру{% endif %}
+{% endblock %}
+
+{% block content %}
+{% load static %}
+    <style>
+        #link1 {
+            background-color: #03d2c8;
+            color: #ffffff;
+            box-shadow: 0 3px 10px 1px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+<section class="course_section">
+    <div class="container">
+        <div class="row">
+            {% for course in courses %}
+        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+            <div class="card">
+            <div class="card_img_top" style="background-image: url('{{course.curs.image.url}}')">
+            </div>
+            <div class="card-body">
+                <a href="{{course.course_after_student}}" class="card-title">{{course.curs.title|slice:"0:33"}}{% if course.curs.title|length > 33 %}...{% endif %}</a>
+                <a href="{{course.course_after_student}}" class="course_btn">{% if user.language == 'ru' %}Пройти обучение{% else %}Үйрену{% endif %}</a>
+            </div>
+            <div class="card-footer">
+                <div class="tname">
+                <p>
+                    {% for i in data %}
+                        {% if i.curs.id == course.curs.id %}<p>{{i.developer}}</p>{% endif %}
+                    {% endfor %}
+                </p>
+                </div>
+            </div>
+            </div>
+        </div>
+        {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

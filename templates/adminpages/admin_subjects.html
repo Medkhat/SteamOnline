@@ -1,0 +1,95 @@
+{% extends 'adminpages/base_admin.html' %}
+
+{% block title %}
+{% if user.language == 'ru' %}Список курсов{% else %}Курстар тізімі{% endif %}
+{% endblock %}
+
+{% block content %}
+
+{% load static %}
+<style>
+  #link1 {
+    background-color: #03d2c8;
+    color: #ffffff;
+    box-shadow: 0 3px 10px 1px rgba(0, 0, 0, 0.3);
+  }
+  .member_counter {
+    display: flex;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 50px;
+    margin-top: 50px;
+  }
+  .member_counter_item {
+    text-align: center;
+    font-size: 20px;
+    background-color: #03d2c8;
+    color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.3);
+  }
+  @media only screen and (max-width: 767px) {
+    .member_counter {
+      display: block;
+      margin-bottom: 50px;
+      margin-top: 50px;
+    }
+    .member_counter_item {
+      margin-bottom: 20px;
+    }
+  } 
+</style>
+<section class="course_section">
+    <div class="container">
+      
+      <div class="row">
+        {% for course in courses %}
+        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+          <div class="card">
+            <div class="card_img_top" style="background-image: url('{{course.image.url}}')">
+            </div>
+            <div class="card-body">
+              <a href="{{course.course_detail}}" title="{{course.title}}" class="card-title">{{course.title|slice:"0:33"}}{% if course.title|length > 33 %}...{% endif %}</a>
+              <a href="{{course.course_detail}}" class="course_sh_btn">{% if user.language == 'ru' %}Открыть{% else %}Курсқа өту{% endif %}</a>
+            </div>
+            <div class="card-footer">
+              <div class="tname">
+                {% for i in data %}
+                {% if i.curs.id == course.id %}<p>{{i.developer}}</p>{% endif %}
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+        
+      </div>
+      
+      <div class="add_new_course">
+        <a href="{% url 'admin_create_course' %}" class="site_btns">{% if user.language == 'ru' %}Добавить новый курс{% else %}Жаңа курс қосу{% endif %}</a>
+      </div>
+      <div class="member_counter">
+        <div class="member_counter_item">
+          <span class="mc_number">{{c}}</span><br>
+          <span class="mc_name">Преподавателей</span>
+        </div>
+        <div class="member_counter_item">
+          <span class="mc_number">{{s}}</span><br>
+          <span class="mc_name">Курсов в системе</span>
+        </div>
+        <div class="member_counter_item">
+          <span class="mc_number">{{b}}</span><br>
+          <span class="mc_name">Часов обучения</span>
+        </div>
+        <div class="member_counter_item">
+          <span class="mc_number">{{d}}</span><br>
+          <span class="mc_name">Учеников</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends 'studpages/base_student.html' %}
+
+{% block title %}
+{% if user.language == 'ru' %}Страница курса{% else %}Курс беті{% endif %}
+{% endblock %}
+
+{% block content %}
+{% load static %}
+<section class="course_section">
+
+  <div class="container">
+    <div class="back_btn">
+      <a href="{% url 'student_index' %}" class="back_link"><i class="fas fa-arrow-left"></i></a>
+    </div>
+    <h3 class="block_title">{{course.title}}</h3>
+    <div class="course_before_data">
+      <div class="cbd_video">
+        <div id="player">
+        </div>
+      </div>
+      <div class="cbd_info">
+        <!-- <div class="cbd_info_item">
+                <p>{% if user.language == 'ru' %}Разработчик курса{% else %}Курсты жасаған{% endif %}</p>
+                <p><strong>{% if data.developer %}{{data.developer}}{% else %}{% if user.language == 'ru' %}Не указан{% else %}Көрсетілмеген{% endif %}{% endif %}</strong></p>
+              </div> -->
+        <div class="cbd_info_item">
+          <p>{% if user.language == 'ru' %}Длительность{% else %}Ұзақтығы{% endif %}</p>
+          <p><strong>{% if data.duration %}{{data.duration}}{% else %}{% if user.language == 'ru' %}Не
+              указан{% else %}Көрсетілмеген{% endif %}{% endif %}</strong></p>
+        </div>
+        <!-- <div class="cbd_info_item">
+                <p>Сертификат</p>
+                <p><strong>{% if data.certificate %}{{data.certificate}}{% else %}{% if user.language == 'ru' %}Не указан{% else %}Көрсетілмеген{% endif %}{% endif %}</strong></p>
+              </div> -->
+        <div class="cbd_info_item">
+          <p>{% if user.language == 'ru' %}Время{% else %}Уақыт{% endif %}</p>
+          <p><strong>{% if data.time %}{{data.time}}{% else %}{% if user.language == 'ru' %}Не
+              указан{% else %}Көрсетілмеген{% endif %}{% endif %}</strong></p>
+        </div>
+        <!-- <button class="site_btns follow_link">{% if user.language == 'ru' %}Записаться на предмет{% else %}Курсқа жазылу{% endif %}</button> -->
+      </div>
+    </div>
+    <div class="course_before_content">
+      {% for lesson in lessons %}
+      <div class="course_content_item">
+        <a href="{{lesson.course_after_student}}">
+          <p>{{lesson.lesson_id}}. {{lesson.title}}</p>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+    <!-- <div class="course_before_content">
+        <h3 class="block_title ccbt">Содержание курса</h3>
+        {% for lesson in lessons %}
+        <div class="course_content_item">
+          <p> {{forloop.counter}} урок.</p>
+          <a href="#">Открыть</a>
+        </div>
+        {% endfor %}
+      </div> -->
+  </div>
+</section>
+
+{% endblock %}
+
+{% block player %}
+<script type="text/javascript">
+  var player = new Playerjs({
+    id: "player",
+    file: "{{URL_MEDIA}}{{course.video.url}}",
+    {% if course.image_video %}
+  poster: "{{course.image_video.url}}"
+  {% endif %}
+
+  });
+</script>
+{% endblock %}

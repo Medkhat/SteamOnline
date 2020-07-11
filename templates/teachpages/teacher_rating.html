@@ -1,0 +1,37 @@
+{% extends 'teachpages/base_teacher.html' %}
+
+{% block title %}
+    Рейтинг
+{% endblock %}
+
+{% block content %}
+<style>
+    #link2 {
+      background-color: #03d2c8;
+      color: #ffffff;
+      box-shadow: 0 3px 10px 1px rgba(0, 0, 0, 0.3);
+    }
+    .block_title {
+      width: 80%;margin:0 auto 30px auto;
+    }
+    @media only screen and (max-width: 767px) {
+      .block_title {
+        width: 100%;margin:0 auto 30px auto;
+      }
+    }
+  </style>
+<section class="course_section">
+        <div class="container">
+            <h3 class="block_title">{% if user.language == 'ru' %}Рейтинг учеников{% else %}Оқушылар рейтингі{% endif %}</h3>
+          <div class="rating_table">
+            {% for student in students %}
+            <div class="rating_list_item">
+              <p class="rt_number">{{forloop.counter}}</p>
+              <p class="rt_name">{{student.first_name}} {{student.last_name}} ({{student.layer}} {% if user.language == 'ru' %}класс{% else %}сынып{% endif %})</p>
+              <p class="rt_point">{{student.rating}}</p>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </section>
+{% endblock %}

@@ -1,0 +1,144 @@
+{% extends 'adminpages/base_admin.html' %}
+
+{% block title %}
+{% if user.language == 'ru' %}Рейтинг{% else %}Рейтинг{% endif %}
+{% endblock %}
+
+{% block content %}
+<style>
+  #link2 {
+    background-color: #03d2c8;
+    color: #ffffff;
+  box-shadow: 0 3px 10px 1px rgba(0, 0, 0, 0.3);
+  }
+    .course_sh_btn{
+      width: 100%;
+      text-align: center;
+      color: #000;
+      background-color: #e7e7e7;
+    }
+    .course_sh_btn:hover{
+      color: #000;
+    }
+    .nav li.nav-item a.course_sh_btn.active{
+      background-color: #03d2c8;
+    }
+    .nav li.nav-item {
+      margin-right: 10px;
+      display: inline;
+    }
+    ul.nav {
+      width: 80%;
+      margin: 0 auto;
+    }
+</style>
+<section class="stud_section">
+    <div class="container">
+      <!-- <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link course_sh_btn active" id="teachRatingTab" data-toggle="pill" href="#teachRating" role="tab" aria-controls="pills-home" aria-selected="true">{% if user.language == 'ru' %}Преподаватели{% else %}Оқытушылар{% endif %}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link course_sh_btn" id="studRatingTab" data-toggle="pill" href="#studRating" role="tab" aria-controls="pills-profile" aria-selected="false">{% if user.language == 'ru' %}Ученики{% else %}Оқушылар{% endif %}</a>
+        </li>
+      </ul> -->
+      <!-- <div class="tab-content" id="pills-tabContent">
+        <div class="tab-pane fade show active" id="teachRating" role="tabpanel" aria-labelledby="teachRatingTab">
+          <div class="rating_search">
+            <form action="">
+              <div class="rating_search_input">
+                <input type="text" class="res_pass_input" name="teacher_search" placeholder="Поиск преподавателей...">
+                <button type="submit"><i class="fas fa-search"></i></button>
+              </div>
+            </form>
+          </div>
+          <div class="rating_table">
+            <table>
+            {% for teacher in teachers %}
+              <tr class="rating_table_item">
+                <td>{{forloop.counter}}</td>
+                <td><a href="{{teacher.admin_teacher_profile}}">{{teacher.last_name}} {{teacher.first_name}}</a></td>
+                <td>{{teacher.school}}</td>
+                <td>{{teacher.email}}</td>
+                <td>{{teacher.rating}}</td>
+              </tr>
+            {% endfor %}
+            </table>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="studRating" role="tabpanel" aria-labelledby="studRatingTab">
+          <div class="rating_table">
+            <table>
+              {% for student in students %}
+              <tr class="rating_table_item">
+                <td>{{forloop.counter}}</td>
+                <td>{{student.last_name}} {{student.first_name}}</td>
+                <td>{{student.school}}</td>
+                <td>
+                  {% for teacher in teachers %}
+                    {% if student.teacher == teacher.id %}{{teacher.last_name}} {{teacher.first_name}}{%endif%}
+                  {% endfor %} 
+                </td>
+                <td>{{student.rating}}</td>
+              </tr>
+              {% endfor %}
+            </table>
+          </div>
+        </div>
+      </div> -->
+      <h3 class="block_title" style="width: 80%;margin:0 auto 20px auto;">{% if user.language == 'ru' %}Ученики{% else %}Оқушылар{% endif %}</h3>
+      <div class="rating_search">
+        <form action="">
+          <div class="rating_search_input">
+            <input type="text" class="res_pass_input" name="student_search" placeholder="{% if user.language == 'ru' %}Поиск ученики...{% else %}Оқушыны іздеу...{% endif %}">
+            <button type="submit"><i class="fas fa-search"></i></button>
+          </div>
+        </form>
+      </div>
+
+      <div class="rating_table">
+        {% if students %}
+        <table>
+          <tr>
+            <th>№</th>
+            <th>{% if user.language == 'ru' %}Имя Фамилия{% else %}Аты-жөні{% endif %}</th>
+            <th>{% if user.language == 'ru' %}Школа{% else %}Мектебі{% endif %}</th>
+            <th>{% if user.language == 'ru' %}Учитель{% else %}Мұғалім{% endif %}</th>
+            <th>Балл</th>
+            <th>{% if user.language == 'ru' %}Доп. балл{% else %}Қос. балл{% endif %}</th>
+          </tr>
+          {% for student in students %}
+          <tr class="rating_table_item">
+            <td>{{forloop.counter}}</td>
+            <td>{{student.last_name}} {{student.first_name}}</td>
+            <td>{{student.school}} ({{student.layer}} {% if user.language == 'ru' %}класс{% else %}сынып{% endif %})</td>
+            <td>
+              {% for teacher in teachers %}
+                {% if student.teacher == teacher.id %}{{teacher.last_name}} {{teacher.first_name}}{%endif%}
+              {% endfor %} 
+            </td>
+            <td>{{student.rating}}</td>
+            <td><a href="{{student.admin_student_profile}}">{{student.points}}</a></td>
+          </tr>
+          {% endfor %}
+        </table>
+        {% else %}
+        <p>{% if user.language == 'ru' %}Не найден{% else %}Табылмады{% endif %}</p>
+        {% endif %}
+     	{% if is_paginated %}
+      <div class="pagination">
+        <a href="{{ prev_url }}" class="{% if not prev_url %}disabled{% endif %}" ><i class="fas fa-arrow-left"></i></a>
+        {% for n in students.paginator.page_range %}
+        {% if students.number == n %}
+        <a href="?page={{ n }}" class="active_pagination">{{n}}</a>
+        {% elif n > students.number|add:-3 and n < students.number|add:3 %}
+        <a href="?page={{ n }}">{{n}}</a>
+        {% endif %}
+        {% endfor %}
+        <a class="page-item {% if not next_url %}disabled{% endif %}" href="{{ next_url }}"><i class="fas fa-arrow-right"></i></a>
+      </div>
+      {% endif %}
+      </div>
+    </div>
+  </section>
+{% endblock %} 

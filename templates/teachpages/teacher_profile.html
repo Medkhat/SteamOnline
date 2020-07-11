@@ -1,0 +1,120 @@
+{% extends 'teachpages/base_teacher.html' %}
+
+{% block title %}
+    Профиль
+{% endblock %}
+
+{% block content %}
+<section class="profile_section">
+   
+  <div class="container">
+    <div class="user_img_info">
+      <div class="user_image">
+        <img src="{{user.avatar.url}}" alt="AVATAR">
+        <form action="">
+          <label for="img_upload" class="iu_label">{% if user.language == 'ru' %}Изменить{% else %}Өзгерту{% endif %}</label>
+        </form>
+        <button type="button" data-toggle="modal" data-target="#prof_edit" class="course_sh_btn">{% if user.language == 'ru' %}Редактировать
+          профиль{% else %}Профильді өзгерту{% endif %}</button>
+        <button type="button" data-toggle="modal" data-target="#pass_edit" class="course_sh_btn">{% if user.language == 'ru' %}Изменить
+          пароль{% else %}Құпиясөзді өзгерту{% endif %}</button>
+      </div>
+      <div class="user_info">
+        <p><strong>{% if user.language == 'ru' %}Имя:{% else %}Аты:{% endif %}</strong> <span>{{user.first_name}}</span></p>
+        <p><strong>{% if user.language == 'ru' %}Фамилия:{% else %}Тегі{% endif %}</strong> <span>{{user.last_name}}</span></p>
+        <p><strong>{% if user.language == 'ru' %}Отчество:{% else %}Әкесінің аты:{% endif %}</strong> <span>{{user.patronymic}}</span></p>
+        <p><strong>Логин:</strong> <span>&#64;{{user.username}}</span></p>
+        <p><strong>Почта:</strong> <span>{{user.email}}</span></p>
+        <p><strong>Телефон:</strong> <span>{{user.phone}}</span></p>
+        <p><strong>ИИН:</strong> <span>{{user.iin}}</span></p>
+        <p><strong>Статус:</strong> <span>{% if user.language == 'ru' %}Преподователь{% else %}Оқытушы{% endif %}</span></p>
+        <p><strong>{% if user.language == 'ru' %}Специальность:{% else %}Мамандығы:{% endif %}</strong> <span>{{user.major}}</span></p>
+        <p><strong>{% if user.language == 'ru' %}Школа{% else %}Мектеп{% endif %}</strong> <span>{{user.school}}</span></p>
+        <p><strong>Рейтинг:</strong> <span>{{user.rating}}</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+ <!-- Modals -->
+
+  <!-- Modal for image upload -->
+  <div class="modal fade" id="img_up" tabindex="-1" role="dialog" aria-labelledby="img_upTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="img_upTitle">{% if user.language == 'ru' %}Изменить аватар{% else %}Суретті өзгерту{% endif %}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{form_image.image}}
+              <p class="img_f_name"></p>
+              <button type="submit" name="submit_avatar" class="course_btn" style=" width: 100%;">{% if user.language == 'ru' %}Изменить{% else %}Өзгерту{% endif %}</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Modal for edit profile -->
+    <div class="modal fade" id="prof_edit" tabindex="-1" role="dialog" aria-labelledby="prof_edit_title"
+      aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="prof_edit_title">{% if user.language == 'ru' %}Изменить профиль{% else %}Профильді өзгерту{% endif %}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form action="" method="POST">
+              {% csrf_token %}
+                {{edit_profile.first_name}}
+                {{edit_profile.last_name}}
+                {{edit_profile.patronymic}}
+                {{edit_profile.email}}
+                <input type="number" name="number" class="res_pass_input" value="{{user.phone}}" placeholder="Введите номер телефона" required>
+                <!-- {{edit_profile.username}}
+                {{edit_profile.iin}} -->
+                {{edit_profile.school}}
+                <input type="text" name="major" class="res_pass_input" value="{{user.major}}" placeholder="Введите специальность" required>
+              <button type="submit" name="edit_profile" class="course_btn" style="width: 100%;">{% if user.language == 'ru' %}Сохранить{% else %}Сақтау{% endif %}</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Modal for edit password -->
+    <div class="modal fade" id="pass_edit" tabindex="-1" role="dialog" aria-labelledby="pass_edit_title"
+      aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="pass_edit_title">{% if user.language == 'ru' %}Изменить пароль{% else %}Құпиясөзді өзгерту{% endif %}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form action="" method="POST">
+              {% csrf_token %}
+              <!-- {{form_password.password}} -->
+              {{form_password.password1}}
+              {{form_password.password2}}
+              <!-- <input type="password" class="res_pass_input" placeholder="Текущий пароль" required>
+              <input type="password" class="res_pass_input" placeholder="Придумайте пароль" required>
+              <input type="password" class="res_pass_input" placeholder="Повторите пароль" required> -->
+              <button type="submit" name="edit_password" class="course_btn" style="width: 100%;">{% if user.language == 'ru' %}Сохранить{% else %}Сақтау{% endif %}</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}

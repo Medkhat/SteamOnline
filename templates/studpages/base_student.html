@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="icon" href="{% static 'img/favicon.png'%}" type="image/png" />
+     <!-- Bootstrap css -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <!-- Font Awesome css -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.9.0/css/all.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <!-- Style css -->
+    <link rel="stylesheet" href="{% static 'css/style.css'%}">
+    <!-- Responsive css -->
+    <link rel="stylesheet" href="{% static 'css/responsive.css'%}">
+</head>
+<body>
+    <div class="site_content">
+            <header class="header sticky-top">
+                    <div class="container">
+                      <div class="logo">
+                        <a href="{% url 'student_index' %}">
+                          <img src="{%static 'img/logo.png'%}" alt="">
+                        </a>
+                      </div>
+                      <input type="checkbox" id="chbox">
+                      <nav class="navigation">
+                        <ul>
+				<!--<li><a id="link1" href="{% url 'student_index' %}">{% if user.language == 'ru' %}Обучение{% else %}Үйрену{% endif %}</a></li>-->
+                         
+                          <li><a id="link3" href="{% url 'student_index' %}">{% if user.language == 'ru' %}Курсы{% else %}Курстар{% endif %}</a></li>
+			  <li><a id="link2" href="{% url 'student_rating' %}">Рейтинг</a></li>
+			</ul>
+                      </nav>
+              
+                      <div class="user_data">
+                        <label class="mob_menu_btn" for="chbox">
+                          <i class="fa fa-bars"></i>
+                        </label>
+                        <div class="lang_block">
+                          <a href="javascript:void(0);" class="lang_link" id="lbtn">{% if user.language == 'ru' %}Русский{% else %}Қазақша{% endif %}</a>
+                          <div class="lang_dd_links">
+                            <ul>
+                              <li><a href="{% url 'language_kz' %}" id="kz">Қазақша</a></li>
+                              <li><a href="{% url 'language_ru' %}" id="ru">Русский</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="user_dd">
+                          <a href="javascript:void(0);" id="user_img">
+                            <img src="{{user.avatar.url}}" alt="USER_IMG"><span title="{{user.last_name}} {{user.first_name}}" id="headerUserName" style="margin-left: 10px; color: #ffffff;">{{user.last_name}} {{user.first_name|slice:"0:1"}}</span>
+                          </a>
+                          <div class="dd_links">
+                            <ul>
+                              <li><a href="{% url 'student_profile' %}">Профиль</a></li>
+                              <li><a href="{% url 'logout_path' %}">{% if user.language == 'ru' %}Выйти{% else %}Шығу{% endif %}</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </header>
+        {% block content %}
+        
+        {% endblock %}
+    </div>
+  
+  
+    <!-- Jquery js -->
+    <script src="{% static 'js/jquery.min.js'%}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'js/popper.min.js'%}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'js/bootstrap.min.js'%}"></script>
+    <!-- Main js -->
+    <script src="{% static 'js/main.js'%}"></script>
+    <script src="{% static 'js/playerjs.js' %}"></script>
+    <script>
+        if($(window).width() < 510) {
+          $("#headerUserName").text("");
+        }
+    </script>
+</body>
+{% block player %}
+{% endblock %}
+</html>

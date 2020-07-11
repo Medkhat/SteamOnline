@@ -1,0 +1,355 @@
+{% extends 'adminpages/base_admin.html' %}
+
+{% block title %}
+{% if user.language == 'ru' %}Страница изменения урока{% else %}Сабақты өзгерту беті{% endif %}
+{% endblock %}
+
+{% block content %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'summernote/summernote-bs4.css' %}">
+<script src="{% static 'summernote/summernote-bs4.min.js' %}"></script>
+
+<style>
+  .course_sh_btn {
+    background-color: #e7e7e7;
+    color: #000000;
+  }
+  .course_sh_btn:hover {
+    color: #000000;
+  }
+</style>
+<section class="course_section">
+    
+    <div class="container">
+        <div class="back_btn">
+            <a href="{{course.course_detail}}" class="back_link"><i class="fas fa-arrow-left"></i></a>
+          </div>
+    {% for message in messages %}
+          {% if 'update_test_success' in message.tags %}
+            <div class="alert alert-success alert-dismissible">
+              <button type="button" class="close" data-dismiss="alert">&times;</button>
+              {% if user.language == 'ru' %}Удачно{% else %}Тест сәтті өзгертілді{% endif %}
+            </div>
+          {% endif %}
+          {% if 'add_test_success' in message.tags %}
+            <div class="alert alert-success alert-dismissible">
+              <button type="button" class="close" data-dismiss="alert">&times;</button>
+              {% if user.language == 'ru' %}Удачно{% else %}Сәтті қосылды{% endif %}
+            </div>
+          {% endif %}
+          {% if 'add_video_success' in message.tags %}
+            <div class="alert alert-success alert-dismissible">
+              <button type="button" class="close" data-dismiss="alert">&times;</button>
+              {% if user.language == 'ru' %}Удачно{% else %}Видео сәтті қосылды{% endif %}
+            </div>
+          {% endif %}
+          {% if 'add_error' in message.tags %}
+            <div class="alert alert-danger alert-dismissible">
+              <button type="button" class="close" data-dismiss="alert">&times;</button>
+              {% if user.language == 'ru' %}Повторите попытку{% else %}Қайта қосыңыз{% endif %}
+            </div>
+          {% endif %}
+    {% endfor %}
+      <h3 class="block_title">{{course.title}}</h3>
+      <div class="course_detail">
+        <div class="cd_left_block">
+          <h5>{% if user.language == 'ru' %}Уроки курса{% else %}Курс сабақтары{% endif %}</h5>
+          <div class="course_lessons">
+            <ul>
+              {% for lesson in lessons %}
+              {% if lesson.id == lesson_id %}
+              <li>
+                <a href="{{lesson.lesson_detail}}" class="active_cl"><i class="fa fa-play-circle"></i>  {{lesson.lesson_id}}. {{lesson.title}}</a>
+              </li>
+              {% else %}
+              <li>
+                <a href="{{lesson.lesson_detail}}"><i class="fa fa-play-circle"></i>  {{lesson.lesson_id}}. {{lesson.title}}</a>
+              </li>
+              {% endif %}
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        <div class="cd_right_block">
+          <ul class="nav nav-pills add_cl_tabs mb-3" id="pills-tab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link course_sh_btn active" id="addTextTab" data-toggle="pill" href="#addText" role="tab" aria-controls="addText" aria-selected="true">{% if user.language == 'ru' %}Добавить текст ученику{% else %}Оқушыға текст қосу{% endif %}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link course_sh_btn" id="addTextTeachTab" data-toggle="pill" href="#addTextTeach" role="tab" aria-controls="addTextTeach" aria-selected="false">{% if user.language == 'ru' %}Добавить текст учителю{% else %}Оқытушыға текст қосу{% endif %}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link course_sh_btn" id="addHintTab" data-toggle="pill" href="#addHint" role="tab" aria-controls="addHint" aria-selected="false">{% if user.language == 'ru' %}Добавить дополнительную информацию{% else %}Қосымша ақпарат қосу{% endif %}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link course_sh_btn" id="addVideoTab" data-toggle="pill" href="#addVideo" role="tab" aria-controls="addVideo" aria-selected="false">{% if user.language == 'ru' %}Добавить видеоролик{% else %}Бейнеролик қосу{% endif %}</a>
+            </li>
+            <li class="nav-item" style="width: 100%;text-align:center;">
+              <a class="nav-link course_sh_btn" id="addTestTab" data-toggle="pill" href="#addTest" role="tab" aria-controls="addTest" aria-selected="false">{% if user.language == 'ru' %}Добавить тест{% else %}Тест қосу{% endif %}</a>
+            </li>
+
+          </ul>
+          <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="addText" role="tabpanel" aria-labelledby="addTextTab">
+              <form action="" method="POST">
+                  {% csrf_token %}
+                  {{form_text.text}}
+                  
+                  <button type="submit" name="submit_text" class="course_btn">{% if user.language == 'ru' %}Сохранить{% else %}Сақтау{% endif %}</button>
+              </form>
+              
+            </div>
+            <div class="tab-pane fade" id="addTextTeach" role="tabpanel" aria-labelledby="addTextTeachTab">
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    {{form_text_teacher.text1}}
+                    
+                    <button type="submit" name="submit_text_teacher" class="course_btn">{% if user.language == 'ru' %}Сохранить{% else %}Сақтау{% endif %}</button>
+                </form>
+                
+              </div>
+            <div class="tab-pane fade" id="addHint" role="tabpanel" aria-labelledby="addHintTab">
+              <form action="" method="POST">
+                  {% csrf_token %}
+                <label for="hintArea" class="hintlabel">{% if user.language == 'ru' %}Добавить дополнительную информацию:{% else %}Қосымша ақпарат қосу{% endif %} </label>
+                <!-- <textarea name="hintArea" data-link id="hintArea" rows="4"></textarea> -->
+                {{form_hint.text_hint}}
+                <div class="addHintBtn">
+                  <button type="submit" name="submit_hint" class="course_btn">{% if user.language == 'ru' %}Добавить{% else %}Қосу{% endif %}</button>
+                </div>
+              </form>
+            </div>
+            <div class="tab-pane fade" id="addVideo" role="tabpanel" aria-labelledby="addVideoTab">
+              <form action="" id="videoForm" method="POST" enctype="multipart/form-data">
+                  {% csrf_token %}
+                <p class="uvn">
+                  <span></span>
+                  <i class="close_p" data-target="#cancelUploadingVideo" data-toggle="modal">&times;</i>
+                </p>
+                <div id="videoTitleInput">
+                  <input name="title_video" type="text" class="res_pass_input" placeholder="Введите название видеоурока">
+                </div>
+                <!-- <div class="addPosterForLessVideo0" id="addPosterForLessVideoDiv">
+                  <label for="addPosterForLessVideo0">Добавить постер для видео</label>
+                  <input name="add_poster" type="file" id="addPosterForLessVideo0">
+                </div> -->
+                <!-- <div id="uploadedVideoPlayer"></div> -->
+                {{form_video.video}}
+                <!-- <input type="file" id="uplVideoForLess"/> -->
+                <label for="uplVideoForLess" id="uvlabel" class="course_sh_btn" style="background-color: #03d2c8;color: #ffffff;">{% if user.language == 'ru' %}Загрузить из компьютера{% else %}Комьютерден жүктеу{% endif %}</label>
+                <button type="submit" name="submit_video" id="saveuv" class="course_btn" style="width: 100%;display: none">{% if user.language == 'ru' %}Сохранить{% else %}Сақтау{% endif %}</button>
+              </form>
+              <div>
+                <br><br>
+                {% for video in videos %}
+                <p class="uvn1">
+                  <span>{{video.title}}</span>
+                  <span class="videoNameBtns">
+                    <i class="fas fa-edit edit_p" data-target="#editVideoName_{{video.id}}" data-toggle="modal" style="background-color: #03d2c8;"></i>
+                    <i data-target="#DeleteVideo" data-toggle="modal" data-url="{{video.video_delete}}" class="fas fa-times edit_p deleteLessBtn" style="background-color: #03d2c8;"></i>
+                  </span>
+                </p>
+                <div id="VideoPlayer_{{video.id}}"></div>
+                <form action="">
+                  <div class="addPosterForLessVideo">
+                    <label for="addPosterForLessVideo_{{video.id}}">{% if user.language == 'ru' %}Добавить постер для видео{% else %}Бейнеге постер салу{% endif %}</label>
+                  </div>
+                </form>
+                {% endfor %}
+              </div>
+            </div>
+            <div class="tab-pane fade" id="addTest" role="tabpanel" aria-labelledby="addTestTab">
+                <div class="test_tabs">
+                    <div class="tab_nav">
+                      {% for test in tests %}
+                      <div class="tab_nav_item" data-tabName="tab_{{forloop.counter}}">{{forloop.counter}}</div>
+                      {% endfor %}
+                      <div class="tab_nav_item is-active" data-tabName="tab_new">+</div>
+                    </div>
+                    <div class="tab_content">
+                      {% for test in tests %}
+                      <div class="tab_content_item tab_{{forloop.counter}}">
+                        <form action="" method="POST">
+                          {% csrf_token %}
+                            <input name="name_{{test.id}}"  type="text" value="{{test.name}}" class="res_pass_input" placeholder="Введите название теста"/>
+                            <input name="ask_{{test.id}}"  type="text" value="{{test.ask}}" class="res_pass_input" placeholder="Введите вопрос теста"/>
+                            <input name="answer1_{{test.id}}"  type="text" value="{{test.answer1}}" id="var1" class="res_pass_input" placeholder="Введите первый вариант"/>
+                            <input name="answer2_{{test.id}}" type="text" value="{{test.answer2}}" id="var2" class="res_pass_input" placeholder="Введите второй вариант"/>
+                            <input name="answer3_{{test.id}}" type="text" value="{{test.answer3}}" id="var3" class="res_pass_input" placeholder="Введите третий вариант"/>
+                            <input name="answer4_{{test.id}}" type="text" value="{{test.answer4}}" id="var4" class="res_pass_input" placeholder="Введите четвертый вариант"/>
+                            <input name="answer5_{{test.id}}" type="text" value="{{test.answer5}}" id="var5" class="res_pass_input" placeholder="Введите пятый вариант"/>
+                            <select name="trueVariant_{{test.id}}" class="testSelect" id="trueVariant">
+                              <option id="variant1" value="1" {% if test.correct_answer == 1 %}selected{% endif %}>1 вариант правильный</option>
+                              <option id="variant2" value="2" {% if test.correct_answer == 2 %}selected{% endif %}>2 вариант правильный</option>
+                              <option id="variant3" value="3" {% if test.correct_answer == 3 %}selected{% endif %}>3 вариант правильный</option>
+                              <option id="variant4" value="4" {% if test.correct_answer == 4 %}selected{% endif %}>4 вариант правильный</option>
+                              <option id="variant5" value="5" {% if test.correct_answer == 5 %}selected{% endif %}>5 вариант правильный</option>
+                            </select>
+                            <div class="addHintBtn">
+                                <a href="{{test.test_delete}}"><button type="button" name="delete_test" class="course_btn" style="background-color: #e93b0f;">{% if user.language == 'ru' %}Удалить{% else %}Өшіру{% endif %}</button></a>
+                                <button type="submit" name="update_test_{{test.id}}" class="course_btn">{% if user.language == 'ru' %}Изменить{% else %}Өзгерту{% endif %}</button>
+                              </div>
+                        </form>
+                      </div>
+                      {% endfor %}
+                      <div class="tab_content_item tab_new is-active">
+                          <form action="" method="POST">
+                              {% csrf_token %}
+                              {{form_test.name_test}}
+                              {{form_test.ask_test}}
+                              {{form_test.answer_1}}
+                              {{form_test.answer_2}}
+                              {{form_test.answer_3}}
+                              {{form_test.answer_4}}
+                              {{form_test.answer_5}}
+                              {{form_test.correct_answer}}
+                            <div class="addHintBtn">
+                              <button type="submit" name="submit_test" class="course_btn">{% if user.language == 'ru' %}Добавить{% else %}Қосу{% endif %}</button>
+                            </div>
+                          </form>
+                      </div>
+                    </div>
+                  </div>
+            </div>
+          </div>
+        </div>
+        <div class="help_block">
+          {% for hint in hints %}
+          <div class="help_item" data-toggle="modal" data-target="#helpModal{{forloop.counter}}">
+              <i class="far fa-question-circle"></i>
+              <a href="{{hint.hint_delete}}">
+              <span class="delete_help_item">
+                <p>&times;</p>
+              </span></a>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+  
+   <!-- Modal -->
+   {% for hint in hints %}
+   <div class="modal fade" id="helpModal{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="helpModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="helpModalTitle">{% if user.language == 'ru' %}Дополнительная информация{% else %}Қосымша ақпарат{% endif %} {{forloop.counter}}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          {{hint.text|safe}}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  
+  {% for video in videos %}
+  <div class="modal fade" id="editVideoName_{{video.id}}" tabindex="-1" role="dialog" aria-labelledby="editVideoNameTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editVideoNameTitle">{% if user.language == 'ru' %}Изменить название видеоурока{% else %}Бейненің атын өзгерту{% endif %}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form action="" method="POST">
+              {% csrf_token %}
+                <input name="title_update_{{video.id}}" type="text" class="res_pass_input" value="{{video.title}}" placeholder="{% if user.language == 'ru' %}Введите название урока{% else %}Сабақтың атың еңгізу{% endif %}" required>
+              <div style="text-align: right;">
+                <button type="button" class="course_btn" data-dismiss="modal" style="background-color: #e93b0f;">{% if user.language == 'ru' %}Отмена{% else %}Болдырмау{% endif %}</button>
+                <button name="update_image_{{video.id}}" type="submit" name="title_course" class="course_btn" id="courseTitleBtn">{% if user.language == 'ru' %}Изменить{% else %}Өзгерту{% endif %}</button>  
+              </div>    
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  
+
+  <!-- Modal -->
+<div class="modal fade" id="cancelUploadingVideo" tabindex="-1" role="dialog" aria-labelledby="cancelUploadingVideoTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body" style="text-align: center;">
+          <form action="">
+            <h4 style="margin-bottom: 30px;">Вы точно хотите отменить загрузку видео?</h4>
+            <button type="button" class="delete_teacher_btn_close" data-dismiss="modal">Отмена</button>
+            <a href="javascript:void(0);" class="delete_teacher_btn" data-dismiss="modal" onclick="reset($('#uplVideoForLess'))">Удалить</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="DeleteVideo" tabindex="-1" role="dialog" aria-labelledby="deleteLessonTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body" style="text-align: center;">
+          <form action="">
+            <h4 style="margin-bottom: 30px;">{% if user.language == 'ru' %}Вы точно хотите удалить?{% else %}Сенімдісіз бе?{% endif %}</h4>
+            <button type="button" class="delete_teacher_btn_close" data-dismiss="modal">{% if user.language == 'ru' %}Отмена{% else %}Бас тарту{% endif %}</button>
+            <a href="" class="delete_teacher_btn">{% if user.language == 'ru' %}Удалить{% else %}Жою{% endif %}</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="{% static 'js/testTabs.js' %}"></script>
+  
+{% endblock %}
+
+{% block player %}
+{% for video in videos %}
+  <div class="modal fade" id="posterForLesons_{{video.id}}" tabindex="-1" role="dialog" aria-labelledby="posterForLesons_{{video.id}}Title" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="posterForLesons_{{video.id}}Title">{% if user.language == 'ru' %}Добавить постер{% else %}Постер қосу{% endif %}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+              <p class="img_f_name" id="posterNameForLessons_{{video.id}}"></p>
+              <input type="file" name="poster_video_{{video.id}}" id="addPosterForLessVideo_{{video.id}}" style="display: none;">
+              <button type="submit" name="add_poster_{{video.id}}" class="course_btn" style=" width: 100%;">{% if user.language == 'ru' %}Добавить{% else %}Қосу{% endif %}</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      $("#addPosterForLessVideo_{{video.id}}").on("change", function(e){
+          var posterName2 = e.target.files[0].name;
+          $("#posterForLesons_{{video.id}}").modal('show');
+          $('#posterNameForLessons_{{video.id}}').text(posterName2);
+        });
+    </script>
+    {% endfor %}
+{% for video in videos %}
+<script type="text/javascript">
+  var player = new Playerjs({
+    id: "VideoPlayer_{{video.id}}",
+    file: "{{URL_MEDIA}}{{video.video.url}}",
+    {% if video.image_video %}
+    poster: "{{URL_MEDIA}}{{video.image_video.url}}"
+    {% endif %}
+
+  });
+
+  
+  console.log("true");
+</script>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,216 @@
+{% extends 'adminpages/base_admin.html' %}
+
+{% block title %}
+{% if user.language == 'ru' %}Список преподавателей{% else %}Оқытушылар тізімі{% endif %}
+{% endblock %}
+
+{% block content %}
+<style>
+  #link3 {
+    background-color: #03d2c8;
+    color: #ffffff;
+    
+  box-shadow: 0 3px 10px 1px rgba(0, 0, 0, 0.3);
+  }
+  .card_image img {
+    width: 74.33px;
+    height: 74.33px;
+  }
+  @media only screen and (max-width: 575px) {
+    .card {
+      text-align: center;
+    }
+    .card_image img {
+      width: 60%;
+      height: auto;
+      margin: 0 auto;
+    }
+  }
+</style>
+<section class="stud_section">
+    {% for message in messages %}
+    {% if message %}
+        <div class="alert alert-warning alert-dismissible">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+          {% if user.language == 'ru' %}Пароли не совпадают{% else %}Құпиясөздер сәйкес емес{% endif %}
+          {% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
+          {% if user.language == 'ru' %}Логин уже существует{% else %}Логин жүйеде бар, басқа логин жазыңыз{% endif %}
+          {% endif %}
+        </div>
+    {% endif %}
+    {% endfor %}
+    <div class="container">
+        <h3 class="block_title" style="width: 80%;margin:0 auto 20px auto;">{% if user.language == 'ru' %}Преподаватели{% else %}Оқытушылар{% endif %}</h3>
+
+      <div class="rating_search">
+        <form action="">
+          <div class="rating_search_input">
+            <input type="text" class="res_pass_input" name="teacher_search" placeholder="{% if user.language == 'ru' %}Поиск преподавателей...{% else %}Оқытушыны іздеу...{% endif %}">
+            <button type="submit"><i class="fas fa-search"></i></button>
+          </div>
+        </form>
+      </div>
+      
+      <!-- <div class="row">
+        {% for teacher in page_objects.object_list %}
+        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+          <div class="card mb-3" style="max-width: 540px;">
+            <div class="row no-gutters">
+              <div class="col-md-4">
+                <div class="card_image">
+                    <img src="{{teacher.avatar.url}}" class="card-img" alt="STUD_IMG">
+                </div>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <a href="{{teacher.admin_teacher_profile}}">
+                    <h6 class="card-text">{{teacher.first_name}} <br>{{teacher.last_name}}</h6>
+                  </a>
+                  <p class="card-text"><small class="text-muted">&#64;{{teacher.username}}</small></p>
+                </div>
+              </div>
+            </div>
+            <span class="delete_teachers" data-url="{{teacher.user_delete}}" data-target="#deleteTeacher" data-toggle="modal"><i class="fas fa-times"></i></span> -->
+            <!-- <span class="unfollow_stud" data-url="{{example.url}}" data-target="#unfollowStudent" data-toggle="modal"><i class="fas fa-minus"></i></span> -->
+          <!-- </div>
+        </div>
+        {% endfor %}
+        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+          <div class="card" style="border:none;">
+            <div class="card-body">
+              <button type="button" data-target="#add_stud" data-toggle="modal" class="add_student_btn"
+                style="box-shadow:none;width: 100%;padding: 11px;">
+                <i class="fas fa-plus" style="margin-right: 10px;"></i>{% if user.language == 'ru' %}Добавить учителя{% else %}Оқытушыны қосу{% endif %}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div> -->
+      <div class="rating_table">
+        <button type="button" data-target="#add_stud" data-toggle="modal" class="add_student_btn"
+          style="box-shadow:none;width: 100%;padding: 11px; margin-bottom: 20px;">
+          <i class="fas fa-plus" style="margin-right: 10px;"></i>{% if user.language == 'ru' %}Добавить учителя{% else %}Оқытушыны қосу{% endif %}
+        </button>
+        {% if page_objects.object_list %}
+        <table>
+          <tr>
+            <th>№</th>
+            <th>{% if user.language == 'ru' %}Имя Фамилия{% else %}Аты-жөні{% endif %}</th>
+            <th>{% if user.language == 'ru' %}Организация{% else %}Мекеме{% endif %}</th>
+            <th>{% if user.language == 'ru' %}Email{% else %}Email{% endif %}</th>
+            <th>{% if user.language == 'ru' %}Удалить{% else %}Жою{% endif %}</th>
+          </tr>
+          {% for teacher in page_objects.object_list %}
+          <tr class="rating_table_item">
+            <td>{{forloop.counter}}</td>
+            <td><a href="{{teacher.admin_teacher_profile}}">{{teacher.last_name}} {{teacher.first_name}}</a></td>
+            <td>{{teacher.school}}</td>
+            <td>{{teacher.email}}</td>
+            <td><span class="delete_table_teachers" data-url="{{teacher.user_delete}}" data-target="#deleteTeacher" data-toggle="modal">
+                {% if user.language == 'ru' %}Удалить{% else %}Жою{% endif %}
+            </span></td>
+          </tr>
+        {% endfor %}
+        </table>
+        {% else %}
+          <p>{% if user.language == 'ru' %}Не найден{% else %}Табылмады{% endif %}</p>
+        {% endif %}
+      </div>
+      {% if is_paginated %}
+      <div class="pagination">
+        <a href="{{ prev_url }}" class="{% if not prev_url %}disabled{% endif %}" ><i class="fas fa-arrow-left"></i></a>
+        {% for n in page_objects.paginator.page_range %}
+        {% if page_objects.number == n %}
+        <a href="?page={{ n }}" class="active_pagination">{{n}}</a>
+        {% elif n > page_objects.number|add:-3 and n < page_objects.number|add:3 %}
+        <a href="?page={{ n }}">{{n}}</a>
+        {% endif %}
+        {% endfor %}
+        <a class="page-item {% if not next_url %}disabled{% endif %}" href="{{ next_url }}"><i class="fas fa-arrow-right"></i></a>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- Modal for reset password -->
+  <!-- Modal -->
+  <div class="modal fade" id="resPass" tabindex="-1" role="dialog" aria-labelledby="resPassTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="resPassTitle">Сброс пароля</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="" method="POST">
+            {% csrf_token %}
+            <!-- <input type="password" id="resPass1" class="res_pass_input" maxlength="15"
+              placeholder="Придумайте новый пароль" required>
+            <input type="password" id="resPass2" class="res_pass_input" maxlength="15"
+              placeholder="Повторите новый пароль" required> -->
+              {{form_password.password}}
+              {{form_password.password1}}
+            <p class="check_text"></p>
+            <button type="submit" name="edit_password" id="resPassBtn" class="course_btn res_pas_btn" style="padding:3px 0;">Сақтау</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="add_stud" tabindex="-1" role="dialog" aria-labelledby="add_stud_title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="add_stud_title">{% if user.language == 'ru' %}Добавить учителя{% else %}Оқытушыны қосу{% endif %}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="" method="POST">
+              {% csrf_token %}
+            {{form_teacher.first_name}}
+            {{form_teacher.last_name}}
+            {{form_teacher.patronymic}}
+            {{form_teacher.username}}
+            {{form_teacher.email}}
+            {{form_teacher.iin}}
+            {{form_teacher.school}}
+            <input type="number" name="number" class="res_pass_input" placeholder="Введите номер телефона" required>
+            <input type="text" name="major" class="res_pass_input" placeholder="Введите специальность" required>
+            {{form_teacher.password}}
+            {{form_teacher.password1}}
+            <!-- <input type="text" class="res_pass_input" placeholder="Имя" required>
+            <input type="text" class="res_pass_input" placeholder="Фамилия" required>
+            <input type="text" class="res_pass_input" placeholder="Придумайте логин" required>
+            <input type="text" class="res_pass_input" placeholder="Введите школу" required>
+            <input type="password" class="res_pass_input" id="stud_pass_1" placeholder="Придумайте пароль" required>
+            <input type="password" class="res_pass_input" id="stud_pass_2" placeholder="Повторите пароль" required> -->
+            <p class="add_check_text"></p>
+            <button type="submit" name="add_teacher" id="add_stud_btn" class="course_btn res_pas_btn"
+              style="padding:3px 0;">{% if user.language == 'ru' %}Сохранить{% else %}Сақтау{% endif %}</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+<div class="modal fade" id="deleteTeacher" tabindex="-1" role="dialog" aria-labelledby="deleteTeacherTite" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body" style="text-align: center;">
+        <form action="">
+          <h4 style="margin-bottom: 30px;">Вы точно хотите удалить?</h4>
+          <button type="button" class="delete_teacher_btn_close" data-dismiss="modal">Отмена</button>
+          <a href="" class="delete_teacher_btn">Удалить</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

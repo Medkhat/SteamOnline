@@ -1,0 +1,248 @@
+/* <<< -----   RESPONSIVE STYLES  ------- >>> */
+@media only screen and (max-width: 1199px) {
+  .rate_number {
+    left: 0px;
+  }
+}
+@media only screen and (max-width: 991px) {
+  .course_detail {
+    display: block;
+  }
+  .cd_left_block,
+  .cd_left_block:hover,
+  .cd_right_block {
+    width: 100%;
+  }
+  .cd_left_block ul li:hover {
+    position: unset;
+  }
+  .cd_left_block {
+    margin-bottom: 30px;
+  }
+  #area {
+    text-align: center;
+  }
+  .reg_section .container {
+    width: 100%;
+  }
+  .mob_menu_btn {
+    display: block;
+    margin-right: 20px;
+    padding: 2px 10px;
+    border: 1px solid #000000;
+    border-radius: 3px;
+    font-size: 20px;
+  }
+  .navigation {
+    position: absolute;
+    top: 90px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 0 20px 2px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    margin-left: -2000px;
+    transition: 0.3s;
+    -webkit-transition: 0.3s;
+    -o-transition: 0.3s;
+    -moz-transition: 0.3s;
+  }
+  .navigation ul li {
+    display: block;
+    margin: 5px 0;
+  }
+  .navigation ul li a {
+    display: block;
+    margin: 0 auto;
+    border-radius: 5px;
+    padding: 5px 70px;
+    text-align: center;
+  }
+  #chbox:checked + .navigation {
+    margin-left: 0;
+  }
+  .stud_img_rate_data {
+    width: 90%;
+  }
+  .rating_table {
+    width: 90%;
+  }
+  .stud_img img {
+    height: 300px;
+  }
+  .user_img_info {
+    width: 100%;
+  }
+  .user_image {
+    width: 30%;
+    font-size: 14px;
+  }
+  .user_info p {
+    font-size: 15px;
+  }
+  .help_block{
+    background-color: #ffffff;
+    position: sticky;
+    position: -webkit-sticky;
+    bottom: 10px;
+    display: flex;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    justify-content: space-between;
+    border: 1px solid #dfdfdf;
+    border-radius: 5px;
+    padding: 10px 20px;
+    width: 100%;
+    z-index: 99;
+  }
+}
+@media only screen and (max-width: 767px) {
+  /* .cd_left_block {
+    position: static;
+  } */
+  .reg_section .container {
+    width: 100%;
+    display: block;
+    text-align: center;
+  }
+  .forms {
+    width: 100%;
+  }
+  .log_p_text {
+    width: 100%;
+    margin-bottom: 30px;
+  }
+  .reg_section h5 {
+    font-size: 16px;
+  }
+  .user_img_info {
+    display: block;
+  }
+  .user_image {
+    margin: 0 auto 20px auto;
+    width: 50%;
+  }
+  .user_image img {
+    width: 100%;
+  }
+  .user_info {
+    width: 100%;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .edit_btn {
+    width: 100%;
+    text-align: center;
+  }
+  .stud_test_results {
+    width: 100%;
+  }
+  .stud_img_rate_data {
+    width: 100%;
+  }
+  .rating_table {
+    width: 100%;
+  }
+  .rate_number {
+    position: static;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  .rate_data {
+    text-align: center;
+  }
+  .course_before_data {
+    display: block;
+  }
+  .cbd_video {
+    width: 100%;
+    margin-bottom: 30px;
+  }
+  .cbd_info{
+    width: 100%;
+  }
+  .course_title_block {
+    display: block;
+  }
+  .course_title_btn button {
+    width: 100%;
+    margin: 20px 0;
+  }
+  .video_img {
+    display: block;
+  }
+  .course_headvideo {
+    width: 100%;
+    margin-bottom: 30px;
+  }
+  .course_lessons_data{
+    display: block;
+  }
+  .course_less{
+    width: 100%;
+    margin-bottom: 30px;
+  }
+}
+@media only screen and (max-width: 614px) {
+  .dd_links {
+    right: 0;
+  }
+}
+@media only screen and (max-width: 528px) {
+  .nav li.nav-item {
+    width: 100%;
+    margin: 0;
+    margin-bottom: 10px;
+  }
+  .nav li.nav-item:nth-child(1), .nav li.nav-item:nth-child(3){
+    margin-right: 0;
+  }
+  .nav li.nav-item:nth-child(1), .nav li.nav-item:nth-child(2){
+    margin-bottom: 10px;
+  }
+
+}
+@media only screen and (max-width: 510px) {
+  .user_image {
+    margin: 0 auto 20px auto;
+    width: 100%;
+  }
+  .stud_img img {
+    height: 200px;
+  }
+}
+@media only screen and (max-width: 454px) {
+  .rate_data {
+    padding-right: 0;
+  }
+  .rate_data span {
+    display: block;
+    margin-bottom: 10px;
+    width: 100%;
+  }
+}
+@media only screen and (max-width: 417px) {
+  #area button {
+    display: block;
+    margin: 5px 0;
+  }
+}
+@media only screen and (max-width: 400px) {
+ #recordStudentsTitle{
+   font-size: 15px;
+ }
+ .students_in_modal p{
+    font-size: 13px;
+  }
+}
+@media only screen and (max-width: 340px) {
+  .rt_number {
+    margin-right: 20px;
+  }
+}
+@media only screen and (max-width: 325px) {
+  .lang_link {
+    box-shadow: 0 3px 10px 1px rgba(0, 0, 0, 0.3);
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+}
